@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 import pandas as pd
 import pandas_datareader.data as web
-from datetime import datetime
+from datetime import date, datetime
 import os
 
 os.environ["TIINGO_API_KEY"] = "ef3c2da7bd8ed93dcf7124f6cd1929638f61c50d"
@@ -12,10 +12,24 @@ app = dash.Dash()
 
 app.layout = html.Div([
     html.H1('Stock Ticker Dashboard'),
-    html.H3('Enter a stock symbol: '),
-    dcc.Input(
-        id = 'stock_picker',
-        value = 'AAPL'
+    html.Div([
+        html.H3('Enter a stock symbol: ', style = {'paddingRight' : '30px'}),
+        dcc.Input(
+            id = 'stock_picker',
+            value = 'AAPL',
+            style = {'fontSize' : 24, 'width' : 75}      #Sets a default value
+        )], style = {'display' : 'inline-block', 
+                    'verticalAlign' : 'top'}
+    ),
+
+    html.Div([html.H3('Select a start and an end date'),
+                dcc.DatePickerRange(
+                    id = 'date_picker',
+                    min_date_allowed = datetime(2000, 1, 1),
+                    max_date_allowed = datetime.today(),
+                    start_date = datetime(2018, 1, 1),
+                    end_date = datetime.today()
+        )], style = {'display' : 'inline-block'}
     ),
     dcc.Graph(
         id = 'stock_price_graph',
@@ -29,11 +43,13 @@ app.layout = html.Div([
 ])
 
 @app.callback(Output('stock_price_graph', 'figure'), 
-                [Input('stock_picker', 'value')])
-def update_graph(stock_ticker):
+                [Input('stock_picker', 'value'),
+                 Input('date_picker', 'start_date'),
+                 Input('date_picker', 'end_date')])
+def update_graph(stock_ticker, start_date, end_date):
 
-    start_date = datetime(2017, 1, 1)
-    end_date = datetime(2019, 4, 9)
+    start_date = datetime.strptime(start_date[:10], "%Y-%m-%d")
+    end_date = datetime.strptime(end_date[:10], "%Y-%m-%d")
 
     df = web.get_data_tiingo(
         symbols = stock_ticker,
