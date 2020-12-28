@@ -1,8 +1,9 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
+from pandas.io.formats import style
 import pandas_datareader.data as web
 from datetime import date, datetime
 import os
@@ -31,6 +32,17 @@ app.layout = html.Div([
                     end_date = datetime.today()
         )], style = {'display' : 'inline-block'}
     ),
+
+    html.Div([
+        html.Button(
+            id = 'submit_btn',
+            n_clicks = 0,
+            children = "Submit",
+            style = {'fontSize' : 24,
+                     'marginLeft' : '30px'}
+        )
+    ], style = {'display' : 'inline-block'}),
+
     dcc.Graph(
         id = 'stock_price_graph',
         figure = dict(
@@ -42,11 +54,12 @@ app.layout = html.Div([
     )
 ])
 
-@app.callback(Output('stock_price_graph', 'figure'), 
-                [Input('stock_picker', 'value'),
-                 Input('date_picker', 'start_date'),
-                 Input('date_picker', 'end_date')])
-def update_graph(stock_ticker, start_date, end_date):
+@app.callback(Output('stock_price_graph', 'figure'),
+                [Input('submit_btn', 'n_clicks')],
+                [State('stock_picker', 'value'),
+                 State('date_picker', 'start_date'),
+                 State('date_picker', 'end_date')])
+def update_graph(n_clicks, stock_ticker, start_date, end_date):
 
     start_date = datetime.strptime(start_date[:10], "%Y-%m-%d")
     end_date = datetime.strptime(end_date[:10], "%Y-%m-%d")
