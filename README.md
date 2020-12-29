@@ -1,4 +1,4 @@
-# Stock Ticker Dashboard
+# Stocks Ticker Dashboard
 
 An application that lets you track the stock prices of the NASDAQ listed companies.
 
