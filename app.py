@@ -23,6 +23,7 @@ for tick in nsdq.index:
     nsdq_opts.append(tick_dict)
 
 
+app.title = "Stocks Ticker Dashboard"
 app.layout = html.Div([
     html.H1('Stock Ticker Dashboard'),
     html.Div([
