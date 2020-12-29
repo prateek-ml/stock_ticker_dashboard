@@ -9,7 +9,9 @@ from datetime import date, datetime
 import os
 
 os.environ["TIINGO_API_KEY"] = "ef3c2da7bd8ed93dcf7124f6cd1929638f61c50d"
+
 app = dash.Dash()
+server = app.server
 
 nsdq = pd.read_csv('nasdaq_listed.csv', index_col=0)
 nsdq_opts = []
